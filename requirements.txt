@@ -1,0 +1,9 @@
+PyMuPDF
+Pillow
+openpyxl
+reportlab
+pypdf
+arabic-reshaper
+python-bidi
+pyinstaller
+pytest
