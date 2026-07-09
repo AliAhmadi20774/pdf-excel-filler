@@ -3,6 +3,7 @@ Pillow
 openpyxl
 reportlab
 pypdf
+cryptography>=3.1
 arabic-reshaper
 python-bidi
 pyinstaller
