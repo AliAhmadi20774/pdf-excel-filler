@@ -1,0 +1,21 @@
+{
+  "template_name": "sample_template",
+  "pdf_file": "sample.pdf",
+  "page_count": 1,
+  "fields": [
+    {
+      "id": "field_001",
+      "label": "نام",
+      "page_index": 0,
+      "excel_column": "name",
+      "x": 100,
+      "y": 100,
+      "width": 180,
+      "height": 24,
+      "font_name": "Vazirmatn",
+      "font_size": 12,
+      "align": "right",
+      "rtl": true
+    }
+  ]
+}

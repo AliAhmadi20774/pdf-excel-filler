@@ -32,6 +32,10 @@ MANIFEST
 *.manifest
 *.spec
 
+# Project runtime output
+output/*
+!output/.gitkeep
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
