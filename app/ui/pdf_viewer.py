@@ -7,6 +7,7 @@ from typing import Callable
 from PIL import ImageTk
 
 from app.core.pdf_renderer import PdfRenderer
+from app.core.pdf_renderer import RenderedPage
 from app.models.field_box import FieldBox
 
 
@@ -23,6 +24,7 @@ class PdfViewer(ttk.Frame):
         self.fields: list[FieldBox] = []
         self.selected_field_id: str | None = None
         self.tk_image = None
+        self._preloaded_page: RenderedPage | None = None
         self._drag_start: tuple[int, int] | None = None
         self._active_rect: int | None = None
 
@@ -59,6 +61,14 @@ class PdfViewer(ttk.Frame):
         self.page_index = 0
         self.render()
 
+    def set_renderer(self, renderer: PdfRenderer, preloaded_page: RenderedPage | None = None) -> None:
+        if self.renderer is not None:
+            self.renderer.close()
+        self.renderer = renderer
+        self.page_index = 0
+        self._preloaded_page = preloaded_page
+        self.render()
+
     def set_fields(self, fields: list[FieldBox]) -> None:
         self.fields = fields
         self.render()
@@ -67,7 +77,11 @@ class PdfViewer(ttk.Frame):
         self.canvas.delete("all")
         if self.renderer is None:
             return
-        page = self.renderer.render_page(self.page_index, zoom=self.zoom)
+        if self._preloaded_page is not None and self._preloaded_page.page_index == self.page_index:
+            page = self._preloaded_page
+            self._preloaded_page = None
+        else:
+            page = self.renderer.render_page(self.page_index, zoom=self.zoom)
         self.current_page_size = (page.width, page.height)
         self.current_image_size = page.image.size
         self.tk_image = ImageTk.PhotoImage(page.image)

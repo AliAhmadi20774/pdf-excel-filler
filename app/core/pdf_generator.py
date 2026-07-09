@@ -3,6 +3,7 @@ from __future__ import annotations
 import io
 import re
 from pathlib import Path
+from typing import Callable
 
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.colors import Color
@@ -20,14 +21,23 @@ class PdfGenerator:
         self.font_dir = Path(font_dir) if font_dir else None
         self._registered_fonts: set[str] = set()
 
-    def generate(self, config: TemplateConfig, rows: list[dict], output_dir: str | Path) -> list[Path]:
+    def generate(
+        self,
+        config: TemplateConfig,
+        rows: list[dict],
+        output_dir: str | Path,
+        progress_callback: Callable[[int, int], None] | None = None,
+    ) -> list[Path]:
         output_path = Path(output_dir)
         output_path.mkdir(parents=True, exist_ok=True)
         created_files: list[Path] = []
+        total = len(rows)
         for index, row in enumerate(rows, start=1):
             target = output_path / f"output_{index:03d}.pdf"
             self._generate_single(config, row, target)
             created_files.append(target)
+            if progress_callback is not None:
+                progress_callback(index, total)
         return created_files
 
     def _generate_single(self, config: TemplateConfig, row: dict, target: Path) -> None:
